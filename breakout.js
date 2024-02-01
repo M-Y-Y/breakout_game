@@ -1,10 +1,11 @@
 // ボールとか用のキャンバス
-let canvas = document.getElementById("breakoutCanvas");
+const canvas = document.getElementById("breakoutCanvas");
 let ctx = canvas.getContext("2d");
 
 const baseImgPath = "img/base.png";
 const brickImgPath = "img/cover.png";
 
+const toolColor = "#0095DD";
 const ballRadius = 10;
 const paddleHeight = 10;
 const paddleWidth = 75;
@@ -28,10 +29,39 @@ let lives = 10;
 
 // 仮想的にブロックを作る
 let bricks = [];
-let bricksMask;
 
+// ページロード
+window.onload =function(){
 
-function initCanvas(image,imagePath, c){
+    // オーバレイを開閉する関数
+    const overlay = document.getElementById('overlay');
+    function overlayToggle() {
+        overlay.classList.toggle('overlay-on');
+    }
+
+    overlayToggle();
+
+    const clickArea = document.getElementsByClassName('overlay-event');
+    for(let i = 0; i < clickArea.length; i++) {
+        clickArea[i].addEventListener('click', overlayToggle, false);
+    }
+
+    
+    // イベントに対してバブリングを停止
+    function stopEvent(event) {
+        event.stopPropagation();
+
+        // ゲームを始める！
+        draw();
+    }
+    const overlayInner = document.getElementById('overlay-inner');
+    overlayInner.addEventListener('click', stopEvent, false);
+    
+}
+
+function initCanvas(imagePath, c){
+
+    const image = new Image();
 
     image.addEventListener("load",function (){
 
@@ -41,7 +71,7 @@ function initCanvas(image,imagePath, c){
         // 一回読画像を読み込んでからじゃないと当たり判定用マスクは作れないからここで…
         if( imagePath == brickImgPath)
         {
-            bricksMask = convertPngToMask(brickCtx);
+            const bricksMask = convertPngToMask(brickCtx);
             
             console.log(bricksMask);
             console.log(brickColumnCount);
@@ -78,9 +108,10 @@ function convertPngToMask(bctx){
             {
                 for(let px = 0; px < brickWidth; px++)
                 {
-                    // ブロックサイズごとに全部のピクセルが透過か調べる
+                    // ブロックサイズごとにブロック内のピクセルが全部透過か調べる
                     let i = (by * imgData.width * brickHeight) + (bx * brickWidth) + (py*imgData.width) + px;
                     console.log(i);
+                    // 左上からRGBARGPA...の1次元配列
                     if( imgData.data[(i*4) + 3] == 0 ){
                         alpha_block.push(0);
                     }else{
@@ -103,42 +134,12 @@ function convertPngToMask(bctx){
     return columns;
 
 }
-
-
-window.onload =function(){
-
-    // オーバレイを開閉する関数
-    const overlay = document.getElementById('overlay');
-    function overlayToggle() {
-        overlay.classList.toggle('overlay-on');
-    }
-
-    overlayToggle();
-
-    const clickArea = document.getElementsByClassName('overlay-event');
-    for(let i = 0; i < clickArea.length; i++) {
-        clickArea[i].addEventListener('click', overlayToggle, false);
-    }
-
-    
-    // イベントに対してバブリングを停止
-    function stopEvent(event) {
-        event.stopPropagation();
-
-        // ゲームを始める！
-        draw();
-    }
-    const overlayInner = document.getElementById('overlay-inner');
-    overlayInner.addEventListener('click', stopEvent, false);
-    
-}
       
 // 背景用画像を書く
 const baseCanvas = document.getElementById("baseCanvas");      
 let baseCtx = baseCanvas.getContext("2d");
 
-const baseImage = new Image();
-initCanvas(baseImage,baseImgPath, baseCtx);
+initCanvas(baseImgPath, baseCtx);
 
 // ブロック用画像を書く
 const brickCanvas = document.getElementById("bricksCanvas");      
@@ -149,10 +150,9 @@ const brickColumnCount = brickCanvas.height/brickHeight;
 console.log('行：'+ brickRowCount);
 console.log('列' + brickColumnCount);
 
-const brickImage = new Image();
-initCanvas(brickImage, brickImgPath, brickCtx);
+initCanvas(brickImgPath, brickCtx);
 
-
+// キー関連
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
@@ -179,6 +179,8 @@ function mouseMoveHandler(e) {
         paddleX = relativeX - paddleWidth/2;
     }
 }
+
+// ゲーム内容
 function collisionDetection() {
     for(let c=0; c<brickColumnCount; c++) {
         for(let r=0; r<brickRowCount; r++) {
@@ -201,14 +203,14 @@ function collisionDetection() {
 function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = toolColor;
     ctx.fill();
     ctx.closePath();
 }
 function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = toolColor;
     ctx.fill();
     ctx.closePath();
 }
@@ -216,26 +218,15 @@ function drawBricks() {
 
     for(let c=0; c<brickColumnCount; c++) {
         for(let r=0; r<brickRowCount; r++) {
+
+            let brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+            let brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
             
-            if(bricks[c][r].status == 1 ) {
-
-                let brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
-                let brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
-                bricks[c][r].x = brickX;
-                bricks[c][r].y = brickY;
-                //ctx.beginPath();
-                //ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                //ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-                //ctx.fill();
-                //ctx.closePath();
-
-                
-            }else{
+            if(bricks[c][r].status == 0 ) {
                 // 当たったら画像を透過する
-                let brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
-                let brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
-                bricks[c][r].x = brickX;
-                bricks[c][r].y = brickY;
+
                 let imgData2 = brickCtx.getImageData(brickX, brickY, brickWidth, brickHeight);
 
                 for(let i = 0, len = brickWidth * brickHeight; i < len; i++){
@@ -247,20 +238,19 @@ function drawBricks() {
 
                 brickCtx.putImageData(imgData2, brickX, brickY);
                 
-            
             }
         }
     }
-
 }
+
 function drawScore() {
     ctx.font = "16px Arial";
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = toolColor;
     ctx.fillText("Score: "+score, 8, 20);
 }
 function drawLives() {
     ctx.font = "16px Arial";
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = toolColor;
     ctx.fillText("Lives: "+lives, canvas.width-65, 20);
 }
 

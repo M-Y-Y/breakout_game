@@ -37,6 +37,7 @@ function initCanvas(image,imagePath, c){
 
         c.drawImage(image, brickOffsetLeft, brickOffsetLeft); 
 
+
         // 一回読画像を読み込んでからじゃないと当たり判定用マスクは作れないからここで…
         if( imagePath == brickImgPath)
         {
@@ -55,9 +56,6 @@ function initCanvas(image,imagePath, c){
                     bricks[c][r] = { x: 0, y: 0, status: s };
                 }
             }
-
-            draw();
-            
         }
 
     });
@@ -107,6 +105,34 @@ function convertPngToMask(bctx){
 }
 
 
+window.onload =function(){
+
+    // オーバレイを開閉する関数
+    const overlay = document.getElementById('overlay');
+    function overlayToggle() {
+        overlay.classList.toggle('overlay-on');
+    }
+
+    overlayToggle();
+
+    const clickArea = document.getElementsByClassName('overlay-event');
+    for(let i = 0; i < clickArea.length; i++) {
+        clickArea[i].addEventListener('click', overlayToggle, false);
+    }
+
+    
+    // イベントに対してバブリングを停止
+    function stopEvent(event) {
+        event.stopPropagation();
+
+        // ゲームを始める！
+        draw();
+    }
+    const overlayInner = document.getElementById('overlay-inner');
+    overlayInner.addEventListener('click', stopEvent, false);
+    
+}
+      
 // 背景用画像を書く
 const baseCanvas = document.getElementById("baseCanvas");      
 let baseCtx = baseCanvas.getContext("2d");
@@ -284,5 +310,3 @@ function draw() {
     y += dy;
     requestAnimationFrame(draw);
 }
-
-//draw();

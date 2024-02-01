@@ -11,8 +11,8 @@ const paddleWidth = 75;
 const brickWidth = 20;
 const brickHeight = 20;
 const brickPadding = 0;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
+const brickOffsetTop = 0;
+const brickOffsetLeft = 0;
 
 let x = canvas.width/2;
 let y = canvas.height-30;
@@ -26,37 +26,84 @@ let leftPressed = false;
 let score = 0;
 let lives = 10;
 
-const bricksMask = 
-[
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
-[0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1]];
+// 仮想的にブロックを作る
+let bricks = [];
+let bricksMask;
+
 
 function initCanvas(image,imagePath, c){
 
     image.addEventListener("load",function (){
 
-        c.drawImage(image, brickOffsetLeft, brickOffsetTop); 
+        c.drawImage(image, brickOffsetLeft, brickOffsetLeft); 
+
+        // 一回読画像を読み込んでからじゃないと当たり判定用マスクは作れないからここで…
+        if( imagePath == brickImgPath)
+        {
+            bricksMask = convertPngToMask(brickCtx);
+            
+            console.log(bricksMask);
+            console.log(brickColumnCount);
+
+
+            for(let c=0; c<brickColumnCount; c++) {
+                bricks[c] = [];
+                for(let r=0; r<brickRowCount; r++) {
+                    // マスクの数が足りない可能性も一応考えておく
+                    let s = bricksMask.length <= c || bricksMask[0].length <= r ? 0: bricksMask[c][r];
+            
+                    bricks[c][r] = { x: 0, y: 0, status: s };
+                }
+            }
+
+            draw();
+            
+        }
 
     });
     image.src = imagePath;
+}
+
+function convertPngToMask(bctx){
+
+    let imgData = bctx.getImageData(brickOffsetLeft, brickOffsetTop, brickCanvas.width, brickCanvas.height);
+
+    let columns = []
+    for(let by = 0; by < brickColumnCount; by++)
+    {
+        let lows = []
+        for(let bx = 0; bx < brickRowCount; bx++)
+        {
+
+            let alpha_block = []
+            for(let py = 0; py < brickHeight; py++)
+            {
+                for(let px = 0; px < brickWidth; px++)
+                {
+                    // ブロックサイズごとに全部のピクセルが透過か調べる
+                    let i = (by * imgData.width * brickHeight) + (bx * brickWidth) + (py*imgData.width) + px;
+                    console.log(i);
+                    if( imgData.data[(i*4) + 3] == 0 ){
+                        alpha_block.push(0);
+                    }else{
+                        alpha_block.push(1);
+                    }
+                }
+            }
+
+            if(alpha_block.every(n => !n)){
+                lows.push(0);
+            }else{
+                lows.push(1);
+            }
+        }
+
+        columns.push(lows);
+
+    }
+
+    return columns;
+
 }
 
 
@@ -71,27 +118,13 @@ initCanvas(baseImage,baseImgPath, baseCtx);
 const brickCanvas = document.getElementById("bricksCanvas");      
 let brickCtx = brickCanvas.getContext("2d");
 
-const brickImage = new Image();
-initCanvas(brickImage, brickImgPath, brickCtx);
-
-// 仮想的にブロックを作る
-let bricks = [];
-
 const brickRowCount = brickCanvas.width/brickWidth;
 const brickColumnCount = brickCanvas.height/brickHeight;
 console.log('行：'+ brickRowCount);
 console.log('列' + brickColumnCount);
 
-for(let c=0; c<brickColumnCount; c++) {
-    bricks[c] = [];
-    for(let r=0; r<brickRowCount; r++) {
-        // マスクの数が足りない可能性も一応考えておく
-        let s = bricksMask.length <= c || bricksMask[0].length <= r ? 0: bricksMask[c][r];
-
-        bricks[c][r] = { x: 0, y: 0, status: s };
-    }
-}
-
+const brickImage = new Image();
+initCanvas(brickImage, brickImgPath, brickCtx);
 
 
 document.addEventListener("keydown", keyDownHandler, false);
@@ -158,7 +191,7 @@ function drawBricks() {
     for(let c=0; c<brickColumnCount; c++) {
         for(let r=0; r<brickRowCount; r++) {
             
-            if(bricks[c][r].status == 1 &&bricksMask[c][r] ) {
+            if(bricks[c][r].status == 1 ) {
 
                 let brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
                 let brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
@@ -252,4 +285,4 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-draw();
+//draw();

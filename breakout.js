@@ -34,6 +34,11 @@ let bricks = [];
 // ページロード
 window.onload =function(){
 
+    // ロード中CSSを非表示にする
+    document.getElementById("loading").style.display='none';
+    // ロード中に先に出てたら変なので隠してたものを表示する
+    document.getElementById("header").style.display='';
+
     // オーバレイを開閉する関数
     const overlay = document.getElementById('overlay');
     function overlayToggle() {

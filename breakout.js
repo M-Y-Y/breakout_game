@@ -5,7 +5,7 @@ let ctx = canvas.getContext("2d");
 const baseImgPath = "img/base.png";
 const brickImgPath = "img/cover.png";
 
-const toolColor = "#0095DD";
+const toolColor = "#e0476a";
 const ballRadius = 10;
 const paddleHeight = 10;
 const paddleWidth = 75;
@@ -29,6 +29,7 @@ let lives = 10;
 
 // 仮想的にブロックを作る
 let bricks = [];
+
 
 // ページロード
 window.onload =function(){
@@ -243,15 +244,9 @@ function drawBricks() {
     }
 }
 
-function drawScore() {
-    ctx.font = "16px Arial";
-    ctx.fillStyle = toolColor;
-    ctx.fillText("Score: "+score, 8, 20);
-}
-function drawLives() {
-    ctx.font = "16px Arial";
-    ctx.fillStyle = toolColor;
-    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+
+function updateLives() {
+    document.getElementById("lifeCount").innerText = lives.toString();
 }
 
 function draw() {
@@ -259,8 +254,8 @@ function draw() {
     drawBricks();
     drawBall();
     drawPaddle();
-    drawScore();
-    drawLives();
+
+    updateLives();
     collisionDetection();
 
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {

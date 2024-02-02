@@ -1,4 +1,4 @@
-* {
+body  {
     padding: 0;
     margin: 0;
 }
@@ -12,6 +12,29 @@
     top: 0;
     left: 0;
 }
+
+.canvas-wrapper div {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.header {
+    background: linear-gradient(#e0476a80,transparent);
+    background-blend-mode:overlay;
+    width: 360px;
+    height: 60px;
+}
+
+.life{
+    padding: 10px;
+}
+
+.life p{
+    display: inline;
+    color: #FFFF;
+}
+
 
 /*ページロード時のスタート画面*/
 #overlay{

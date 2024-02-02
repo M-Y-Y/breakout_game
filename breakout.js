@@ -49,19 +49,17 @@ window.onload =function(){
 
     const clickArea = document.getElementsByClassName('overlay-event');
     for(let i = 0; i < clickArea.length; i++) {
-        clickArea[i].addEventListener('click', overlayToggle, false);
+        clickArea[i].addEventListener('click', stopEvent, false);
     }
 
-    
-    // イベントに対してバブリングを停止
-    function stopEvent(event) {
-        event.stopPropagation();
+    function stopEvent() {
+        overlay.classList.toggle('overlay-off');
 
         // ゲームを始める！
         draw();
     }
-    const overlayInner = document.getElementById('overlay-inner');
-    overlayInner.addEventListener('click', stopEvent, false);
+    
+
     
 }
 
@@ -75,7 +73,7 @@ function initCanvas(imagePath, c){
 
 
         // 一回読画像を読み込んでからじゃないと当たり判定用マスクは作れないからここで…
-        if( imagePath == brickImgPath)
+        if(imagePath == brickImgPath)
         {
             const bricksMask = convertPngToMask(brickCtx);
             

@@ -22,7 +22,6 @@ body  {
 .topShade {
     background: linear-gradient(#e0476a80,transparent);
     background-blend-mode:overlay;
-    width: 360px;
     height: 60px;
 }
 
@@ -63,7 +62,7 @@ body  {
   height:100%;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
 }
 .flex div{
     display: flex;
@@ -89,7 +88,7 @@ body  {
     height: 600px;
     overflow:hidden;
   }
-  
+
   .loading > div {
     width: 100px;
     height: 100px;
@@ -99,7 +98,7 @@ body  {
     margin: 0 auto;
     animation: loading 2s ease-in infinite;
   }
-  
+
   @keyframes loading {
     0% {
       transform: scale(1);
@@ -109,4 +108,3 @@ body  {
       transform: scale(50);
     }
   }
-

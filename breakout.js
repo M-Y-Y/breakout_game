@@ -15,12 +15,12 @@ const brickPadding = 0;
 const brickOffsetTop = 0;
 const brickOffsetLeft = 0;
 
-let x = canvas.width/2;
-let y = canvas.height-30;
+let x;
+let y;
 let dx = 2;
 let dy = -2;
+let paddleX;
 
-let paddleX = (canvas.width-paddleWidth)/2;
 let rightPressed = false;
 let leftPressed = false;
 
@@ -37,7 +37,12 @@ window.onload =function(){
     // ロード中CSSを非表示にする
     document.getElementById("loading").style.display='none';
     // ロード中に先に出てたら変なので隠してたものを表示する
+    document.getElementById("topShade").style.width = baseCanvas.width +'px';
     document.getElementById("header").style.display='';
+
+    x = canvas.width/2;
+    y = canvas.height-30;
+    paddleX = (canvas.width-paddleWidth)/2;
 
     // オーバレイを開閉する関数
     const overlay = document.getElementById('overlay');
@@ -58,35 +63,29 @@ window.onload =function(){
         // ゲームを始める！
         draw();
     }
-    
-
-    
 }
 
 function initCanvas(imagePath, c){
-
     const image = new Image();
 
     image.addEventListener("load",function (){
+      let afterWidth = canvas.width;
+      let afterHeight = Math.floor(canvas.width * 1.6);
 
-        c.drawImage(image, brickOffsetLeft, brickOffsetLeft); 
-
+        c.drawImage(image, brickOffsetLeft, brickOffsetLeft, 750, 1200
+          , brickOffsetLeft, brickOffsetLeft,afterWidth,afterHeight);
 
         // 一回読画像を読み込んでからじゃないと当たり判定用マスクは作れないからここで…
         if(imagePath == brickImgPath)
         {
             const bricksMask = convertPngToMask(brickCtx);
-            
-            console.log(bricksMask);
-            console.log(brickColumnCount);
-
 
             for(let c=0; c<brickColumnCount; c++) {
                 bricks[c] = [];
                 for(let r=0; r<brickRowCount; r++) {
                     // マスクの数が足りない可能性も一応考えておく
                     let s = bricksMask.length <= c || bricksMask[0].length <= r ? 0: bricksMask[c][r];
-            
+
                     bricks[c][r] = { x: 0, y: 0, status: s };
                 }
             }
@@ -99,6 +98,9 @@ function initCanvas(imagePath, c){
 function convertPngToMask(bctx){
 
     let imgData = bctx.getImageData(brickOffsetLeft, brickOffsetTop, brickCanvas.width, brickCanvas.height);
+
+    console.log("B"+brickCanvas.width);
+    console.log("I"+imgData.width);
 
     let columns = []
     for(let by = 0; by < brickColumnCount; by++)
@@ -114,7 +116,7 @@ function convertPngToMask(bctx){
                 {
                     // ブロックサイズごとにブロック内のピクセルが全部透過か調べる
                     let i = (by * imgData.width * brickHeight) + (bx * brickWidth) + (py*imgData.width) + px;
-                    console.log(i);
+
                     // 左上からRGBARGPA...の1次元配列
                     if( imgData.data[(i*4) + 3] == 0 ){
                         alpha_block.push(0);
@@ -138,19 +140,36 @@ function convertPngToMask(bctx){
     return columns;
 
 }
-      
-// 背景用画像を書く
-const baseCanvas = document.getElementById("baseCanvas");      
-let baseCtx = baseCanvas.getContext("2d");
 
+// モニタサイズにあわせてキャンバスサイズを調整する
+let w = window.innerWidth;
+let h = Math.floor(window.innerWidth * 1.6);
+if(window.innerHeight < h)
+{
+  w = Math.floor(window.innerHeight / 1.6);
+  h = window.innerHeight;
+}
+
+canvas.width = w;
+canvas.height = h;
+
+// 背景用画像を書く
+const baseCanvas = document.getElementById("baseCanvas");
+let baseCtx = baseCanvas.getContext("2d");
+baseCanvas.width = w;
+baseCanvas.height = h;
 initCanvas(baseImgPath, baseCtx);
 
-// ブロック用画像を書く
-const brickCanvas = document.getElementById("bricksCanvas");      
-let brickCtx = brickCanvas.getContext("2d");
+console.log("CANVAS");
 
-const brickRowCount = brickCanvas.width/brickWidth;
-const brickColumnCount = brickCanvas.height/brickHeight;
+// ブロック用画像を書く
+const brickCanvas = document.getElementById("bricksCanvas");
+let brickCtx = brickCanvas.getContext("2d");
+brickCanvas.width = w;
+brickCanvas.height = h;
+
+const brickRowCount = Math.ceil(brickCanvas.width/brickWidth);
+const brickColumnCount = Math.ceil(brickCanvas.height/brickHeight);
 console.log('行：'+ brickRowCount);
 console.log('列' + brickColumnCount);
 
@@ -227,7 +246,7 @@ function drawBricks() {
             let brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
             bricks[c][r].x = brickX;
             bricks[c][r].y = brickY;
-            
+
             if(bricks[c][r].status == 0 ) {
                 // 当たったら画像を透過する
 
@@ -241,7 +260,7 @@ function drawBricks() {
                 }
 
                 brickCtx.putImageData(imgData2, brickX, brickY);
-                
+
             }
         }
     }

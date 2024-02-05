@@ -8,7 +8,7 @@ const brickImgPath = "img/cover.png";
 const toolColor = "#e0476a";
 const ballRadius = 10;
 const paddleHeight = 10;
-const paddleWidth = 75;
+const paddleWidth = 74;
 const brickWidth = 20;
 const brickHeight = 20;
 const brickPadding = 0;
@@ -58,8 +58,9 @@ window.onload =function(){
         // ゲームを始める！
         draw();
     }
-    
 
+    // スマホ用にスワイプも対応
+    catchSwipe();
     
 }
 
@@ -77,10 +78,6 @@ function initCanvas(imagePath, c){
         {
             const bricksMask = convertPngToMask(brickCtx);
             
-            console.log(bricksMask);
-            console.log(brickColumnCount);
-
-
             for(let c=0; c<brickColumnCount; c++) {
                 bricks[c] = [];
                 for(let r=0; r<brickRowCount; r++) {
@@ -114,7 +111,6 @@ function convertPngToMask(bctx){
                 {
                     // ブロックサイズごとにブロック内のピクセルが全部透過か調べる
                     let i = (by * imgData.width * brickHeight) + (bx * brickWidth) + (py*imgData.width) + px;
-                    console.log(i);
                     // 左上からRGBARGPA...の1次元配列
                     if( imgData.data[(i*4) + 3] == 0 ){
                         alpha_block.push(0);
@@ -182,6 +178,17 @@ function mouseMoveHandler(e) {
     if(relativeX > 0 && relativeX < canvas.width) {
         paddleX = relativeX - paddleWidth/2;
     }
+}
+
+function catchSwipe() {
+	let moveX;	// スワイプ中のx座標
+
+	// スワイプ中： xy座標を取得
+	document.addEventListener("touchmove", function(e) {
+		e.preventDefault();
+		moveX = e.changedTouches[0].pageX;
+        paddleX = moveX-(paddleWidth/2);
+	},{passive: false});
 }
 
 // ゲーム内容

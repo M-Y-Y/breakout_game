@@ -8,6 +8,7 @@ const brickImgPath = "img/cover.png";
 const toolColor = "#e0476a";
 const ballRadius = 10;
 const paddleHeight = 10;
+const paddleBottomMargin = 50;
 
 const brickWidth = 20;
 const brickHeight = 20;
@@ -43,8 +44,8 @@ window.onload =function(){
     document.getElementById("header").style.display='';
 
     x = canvas.width/2;
-    y = canvas.height-30;
-    paddleWidth = canvas.width * 0.15; 
+    y = canvas.height-30-paddleBottomMargin;
+    paddleWidth = canvas.width * 0.15;
     paddleX = (canvas.width-paddleWidth)/2;
 
     // オーバレイを開閉する関数
@@ -69,7 +70,7 @@ window.onload =function(){
 
     // スマホ用にスワイプも対応
     catchSwipe();
-    
+
 }
 
 function initCanvas(imagePath, c){
@@ -86,7 +87,7 @@ function initCanvas(imagePath, c){
         if(imagePath == brickImgPath)
         {
             const bricksMask = convertPngToMask(brickCtx);
-            
+
             for(let c=0; c<brickColumnCount; c++) {
                 bricks[c] = [];
                 for(let r=0; r<brickRowCount; r++) {
@@ -244,7 +245,7 @@ function drawBall() {
 }
 function drawPaddle() {
     ctx.beginPath();
-    ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+    ctx.rect(paddleX, canvas.height-paddleHeight-paddleBottomMargin, paddleWidth, paddleHeight);
     ctx.fillStyle = toolColor;
     ctx.fill();
     ctx.closePath();
@@ -297,7 +298,7 @@ function draw() {
     if(y + dy < ballRadius) {
         dy = -dy;
     }
-    else if(y + dy > canvas.height-ballRadius) {
+    else if(y + dy > canvas.height-ballRadius-paddleBottomMargin) {
         if(x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy;
         }
@@ -309,7 +310,7 @@ function draw() {
             }
             else {
                 x = canvas.width/2;
-                y = canvas.height-30;
+                y = canvas.height-30-paddleBottomMargin;
                 dx = ballSpeed;
                 dy = ballSpeed*-1;
                 paddleX = (canvas.width-paddleWidth)/2;

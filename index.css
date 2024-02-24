@@ -20,7 +20,7 @@ body  {
 }
 
 .topShade {
-    background: linear-gradient(#e0476a80,transparent);
+    background: linear-gradient(#e0476a90,transparent);
     background-blend-mode:overlay;
     height: 60px;
 }
@@ -29,6 +29,7 @@ body  {
     position: absolute;
     top:0;
     padding: 10px;
+    font-size: 30px;
 }
 
 .life p{

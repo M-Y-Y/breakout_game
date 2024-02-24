@@ -6,7 +6,7 @@ const baseImgPath = "img/base.png";
 const brickImgPath = "img/cover.png";
 
 const toolColor = "#e0476a";
-const ballRadius = 10;
+
 const paddleHeight = 10;
 const paddleBottomMargin = 50;
 
@@ -15,12 +15,15 @@ const brickHeight = 20;
 const brickPadding = 0;
 const brickOffsetTop = 0;
 const brickOffsetLeft = 0;
-const ballSpeed = 8;
+let validBrickCount = 0;
+
+let ballRadius;
+let ballSpeed;
 
 let x;
 let y;
-let dx = ballSpeed;
-let dy = ballSpeed*-1;
+let dx;
+let dy;
 let paddleWidth;
 let paddleX;
 
@@ -47,6 +50,17 @@ window.onload =function(){
     y = canvas.height-30-paddleBottomMargin;
     paddleWidth = canvas.width * 0.15;
     paddleX = (canvas.width-paddleWidth)/2;
+
+    ballRadius = Math.floor(canvas.width/46);
+    let ratio = 80;
+    if(window.devicePixelRatio)
+    {
+      ratio = 80;
+    }
+    ballSpeed = Math.floor((canvas.width)/ratio);
+
+    dx = ballSpeed;
+    dy = ballSpeed*-1;
 
     // オーバレイを開閉する関数
     const overlay = document.getElementById('overlay');
@@ -134,6 +148,7 @@ function convertPngToMask(bctx){
                 lows.push(0);
             }else{
                 lows.push(1);
+                validBrickCount++;
             }
         }
 
@@ -226,7 +241,7 @@ function collisionDetection() {
                     dy = -dy;
                     b.status = 0;
                     score++;
-                    if(score == brickRowCount*brickColumnCount) {
+                    if(score == validBrickCount) {
                         alert("YOU WIN, CONGRATS!");
                         document.location.reload();
                     }

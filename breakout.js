@@ -7,11 +7,11 @@ const brickImgPath = "img/cover.png";
 
 const toolColor = "#e0476a";
 
-const paddleHeight = 10;
+const paddleHeight = 30;
 const paddleBottomMargin = 50;
 
-const brickWidth = 20;
-const brickHeight = 20;
+let brickWidth = 20;
+let brickHeight = 20;
 const brickPadding = 0;
 const brickOffsetTop = 0;
 const brickOffsetLeft = 0;
@@ -48,16 +48,12 @@ window.onload =function(){
 
     x = canvas.width/2;
     y = canvas.height-30-paddleBottomMargin;
+
     paddleWidth = canvas.width * 0.15;
     paddleX = (canvas.width-paddleWidth)/2;
 
     ballRadius = Math.floor(canvas.width/46);
-    let ratio = 80;
-    if(window.devicePixelRatio)
-    {
-      ratio = 80;
-    }
-    ballSpeed = Math.floor((canvas.width)/ratio);
+    ballSpeed = Math.floor(canvas.width/90);
 
     dx = ballSpeed;
     dy = ballSpeed*-1;
@@ -171,6 +167,9 @@ if(window.innerHeight < h)
 
 canvas.width = w;
 canvas.height = h;
+
+brickWidth = Math.floor(canvas.width/23);
+brickHeight = Math.floor(canvas.width/23);
 
 // 背景用画像を書く
 const baseCanvas = document.getElementById("baseCanvas");

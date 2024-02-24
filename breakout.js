@@ -53,7 +53,7 @@ window.onload =function(){
     paddleX = (canvas.width-paddleWidth)/2;
 
     ballRadius = Math.floor(canvas.width/46);
-    ballSpeed = Math.floor(canvas.width/90);
+    ballSpeed = Math.floor(canvas.width*window.devicePixelRatio/80);
 
     dx = ballSpeed;
     dy = ballSpeed*-1;

@@ -53,8 +53,23 @@ window.onload =function(){
     paddleX = (canvas.width-paddleWidth)/2;
 
     ballRadius = Math.floor(canvas.width/46);
-    ballSpeed = Math.floor(canvas.width*window.devicePixelRatio/80);
 
+    // デバイス検出
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    console.log("iOSデバイス: " + isIOS);
+    
+    
+
+    // iOSの場合は速度を上げる
+    if (isIOS) {
+        ballSpeed = Math.floor(canvas.width/40); // iOSでは速く
+    } else {
+        ballSpeed = Math.floor(canvas.width/60); // 他のデバイスは通常速度
+}
+ 
+    console.log("ボールの速度: " + ballSpeed);
+    
     dx = ballSpeed;
     dy = ballSpeed*-1;
 
@@ -93,10 +108,14 @@ function initCanvas(imagePath, c){
         c.drawImage(image, brickOffsetLeft, brickOffsetLeft, 750, 1200
           , brickOffsetLeft, brickOffsetLeft,afterWidth,afterHeight);
 
+          
+
         // 一回読画像を読み込んでからじゃないと当たり判定用マスクは作れないからここで…
-        if(imagePath == brickImgPath)
+        if(imagePath == brickImgPath)   
         {
             const bricksMask = convertPngToMask(brickCtx);
+
+            
 
             for(let c=0; c<brickColumnCount; c++) {
                 bricks[c] = [];
@@ -104,7 +123,7 @@ function initCanvas(imagePath, c){
                     // マスクの数が足りない可能性も一応考えておく
                     let s = bricksMask.length <= c || bricksMask[0].length <= r ? 0: bricksMask[c][r];
 
-                    bricks[c][r] = { x: 0, y: 0, status: s };
+                    bricks[c][r] = { x: 0, y: 0, status: s, processed: false };
                 }
             }
         }
@@ -271,10 +290,11 @@ function drawBricks() {
 
             let brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
             let brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
+
             bricks[c][r].x = brickX;
             bricks[c][r].y = brickY;
 
-            if(bricks[c][r].status == 0 ) {
+            if(bricks[c][r].status == 0 && !bricks[c][r].processed) {
                 // 当たったら画像を透過する
 
                 let imgData2 = brickCtx.getImageData(brickX, brickY, brickWidth, brickHeight);
@@ -287,6 +307,7 @@ function drawBricks() {
                 }
 
                 brickCtx.putImageData(imgData2, brickX, brickY);
+                bricks[c][r].processed = true; // 処理済みフラグを立てる
 
             }
         }

@@ -3,6 +3,22 @@ body  {
     margin: 0;
 }
 
+.thumbnail {
+  width: 100px;  
+  height: 100px;  
+  padding: 10px;
+  object-fit: cover; 
+}
+
+footer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 100%;
+  text-align: right;
+  font-size: 14px;
+
+}
 
 .canvas-wrapper {
     position: relative;

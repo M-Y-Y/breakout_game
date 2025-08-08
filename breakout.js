@@ -2,8 +2,7 @@
 const canvas = document.getElementById("breakoutCanvas");
 let ctx = canvas.getContext("2d");
 
-const baseImgPath = "img/base.png";
-const brickImgPath = "img/cover.png";
+
 
 const toolColor = "#e0476a";
 
@@ -36,6 +35,11 @@ let lives = 10;
 // 仮想的にブロックを作る
 let bricks = [];
 
+const params = new URLSearchParams(window.location.search);
+const imageId = params.get('imageId');
+
+const baseImgPath = `img/base${imageId}.png`;
+const brickImgPath = `img/cover${imageId}.png`;
 
 // ページロード
 window.onload =function(){

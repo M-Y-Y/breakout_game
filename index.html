@@ -5,36 +5,26 @@
     <meta charset="utf-8" />
     <title>ウキウキブロック崩し</title>
     <link rel="stylesheet" href="index.css">
-    <script defer src="breakout.js"></script>
+
 </head>
 
 <body>
-    <div class="canvas-wrapper">
-        <div id="loading" class="loading">
-            <div></div>
-        </div>
-        <canvas id="baseCanvas" width="300x" height="1200px"></canvas>
-        <canvas id="bricksCanvas" width="750px" height="1200px"></canvas>
-        <canvas id="breakoutCanvas" width="750px" height="1200px"></canvas>
-        <div id="header" style="display: none;">
-            <div id = "topShade" class="topShade"></div>
-            <div class="life">
-                <p id="lifeIcon">♥ </p>
-                <p id="lifeCount">00</p>
-            </div>
-        </div>
-    </div>
+  <h1>懐かし！脱衣ブロック崩し！！</h1>
 
-    <div id="overlay" class="overlay-event">
-        <div class="flex">
-            <div>
-                <img src="img/start.png" alt="スタート"><br>
-                <button id="start-btn" class="overlay-event" type=button>tap to start!</button>
-            </div>
-        </div>
-    </div>
+  <img src="img\thumbnail1.png" class="thumbnail" onclick="startGame('1')" />
+  <img src="img\thumbnail2.png" class="thumbnail" onclick="startGame('2')" />
 
+  <footer>
+    作成：◯◯
+  </footer>
 
+  <script>
+    function startGame(imageId) {
+      // 画像ファイル名をURLパラメータとして渡してgame.htmlへ遷移
+      const url = `game.html?imageId=${encodeURIComponent(imageId)}`;
+      window.location.href = url;
+    }
+  </script>
 
 </body>
 

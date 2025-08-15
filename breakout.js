@@ -31,7 +31,7 @@ let rightPressed = false;
 let leftPressed = false;
 
 let score = 0;
-let lives = 10;
+let lives = 20;
 
 let isRunning = true; // ゲーム進行中かどうか
 
@@ -57,12 +57,12 @@ window.onload =function(){
     x = canvas.width/2;
     y = canvas.height-30-paddleBottomMargin;
 
-    paddleWidth = canvas.width * 0.15;
-    paddleHeight = paddleWidth / 5;
+    paddleWidth = canvas.width * 0.2;
+    paddleHeight = paddleWidth / 6;
     paddleX = (canvas.width-paddleWidth)/2;
 
-    ballRadius = Math.floor(canvas.width/46);
-    ballSpeed = Math.floor(canvas.width/60);
+    ballRadius = Math.floor(canvas.width/50);
+    ballSpeed = Math.floor(canvas.width/70);
 
     dx = ballSpeed;
     dy = ballSpeed*-1;

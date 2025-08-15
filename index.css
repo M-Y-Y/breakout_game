@@ -2,12 +2,20 @@ body  {
     padding: 0;
     margin: 0;
 }
+.thumbnails {
+   display: flex;
+   flex-wrap: nowrap;
+   padding: 10px;
+   width: 100%;
+ }
 
 .thumbnail {
-  width: 100px;  
-  height: 100px;  
-  padding: 10px;
-  object-fit: cover; 
+  width: 80%;
+  object-fit: contain;
+}
+
+h1{
+  text-align: center;
 }
 
 footer {

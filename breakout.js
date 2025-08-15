@@ -6,7 +6,7 @@ let ctx = canvas.getContext("2d");
 
 const toolColor = "#e0476a";
 
-const paddleHeight = 30;
+
 const paddleBottomMargin = 50;
 
 let brickWidth = 20;
@@ -24,6 +24,7 @@ let y;
 let dx;
 let dy;
 let paddleWidth;
+let paddleHeight;
 let paddleX;
 
 let rightPressed = false;
@@ -54,6 +55,7 @@ window.onload =function(){
     y = canvas.height-30-paddleBottomMargin;
 
     paddleWidth = canvas.width * 0.15;
+    paddleHeight = paddleWidth / 5;
     paddleX = (canvas.width-paddleWidth)/2;
 
     ballRadius = Math.floor(canvas.width/46);
@@ -62,8 +64,8 @@ window.onload =function(){
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
     console.log("iOSデバイス: " + isIOS);
-    
-    
+
+
 
     // iOSの場合は速度を上げる
     if (isIOS) {
@@ -71,9 +73,9 @@ window.onload =function(){
     } else {
         ballSpeed = Math.floor(canvas.width/60); // 他のデバイスは通常速度
 }
- 
+
     console.log("ボールの速度: " + ballSpeed);
-    
+
     dx = ballSpeed;
     dy = ballSpeed*-1;
 
@@ -106,20 +108,19 @@ function initCanvas(imagePath, c){
     const image = new Image();
 
     image.addEventListener("load",function (){
+
       let afterWidth = canvas.width;
       let afterHeight = Math.floor(canvas.width * 1.6);
 
         c.drawImage(image, brickOffsetLeft, brickOffsetLeft, 750, 1200
           , brickOffsetLeft, brickOffsetLeft,afterWidth,afterHeight);
 
-          
+
 
         // 一回読画像を読み込んでからじゃないと当たり判定用マスクは作れないからここで…
-        if(imagePath == brickImgPath)   
+        if(imagePath == brickImgPath)
         {
             const bricksMask = convertPngToMask(brickCtx);
-
-            
 
             for(let c=0; c<brickColumnCount; c++) {
                 bricks[c] = [];
@@ -133,7 +134,10 @@ function initCanvas(imagePath, c){
         }
 
     });
+
     image.src = imagePath;
+
+
 }
 
 function convertPngToMask(bctx){

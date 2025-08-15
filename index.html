@@ -2,30 +2,40 @@
 <html lang="ja">
 
 <head>
-    <meta charset="utf-8" />
-    <title>ウキウキブロック崩し</title>
-    <link rel="stylesheet" href="index.css">
+  <meta charset="utf-8" />
+  <title>ウキウキブロック崩し!</title>
+  <link rel="stylesheet" href="index.css">
 
 </head>
 
 <body>
-  <h1>懐かし！脱衣ブロック崩し！！</h1>
+  <h1>ばきにゃんの脱衣ブロック崩しがやりたい…そんだけ！！</h1>
+  <div class="thumbnails">
+    <div class="thumbnail-item">
+      <img src="img/thumbnail1.png" class="thumbnail" onclick="startGame('1')" />
+      <p class="author">
+        よんさん
+      </p>
+    </div>
 
-  <img src="img\thumbnail1.png" class="thumbnail" onclick="startGame('1')" />
-  <img src="img\thumbnail2.png" class="thumbnail" onclick="startGame('2')" />
+    <div class="thumbnail-item">
+      <img src="img/thumbnail2.png" class="thumbnail" onclick="startGame('2')" />
+      <p class="author">
+        ゆみお
+      </p>
+    </div>
+    <footer>
+      ゆみお<a href="https://x.com/yumio__movie">@yumio__movie</a>
+    </footer>
 
-  <footer>
-    作成：◯◯
-  </footer>
-
-  <script>
+    <script>
     function startGame(imageId) {
       // 画像ファイル名をURLパラメータとして渡してgame.htmlへ遷移
       const url = `game.html?imageId=${encodeURIComponent(imageId)}`;
       window.location.href = url;
     }
-  </script>
+    </script>
 
-</body>
+  </body>
 
-</html>
+  </html>

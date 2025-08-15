@@ -59,22 +59,7 @@ window.onload =function(){
     paddleX = (canvas.width-paddleWidth)/2;
 
     ballRadius = Math.floor(canvas.width/46);
-
-    // デバイス検出
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-    console.log("iOSデバイス: " + isIOS);
-
-
-
-    // iOSの場合は速度を上げる
-    if (isIOS) {
-        ballSpeed = Math.floor(canvas.width/40); // iOSでは速く
-    } else {
-        ballSpeed = Math.floor(canvas.width/60); // 他のデバイスは通常速度
-}
-
-    console.log("ボールの速度: " + ballSpeed);
+    ballSpeed = Math.floor(canvas.width/60);
 
     dx = ballSpeed;
     dy = ballSpeed*-1;

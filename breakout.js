@@ -61,7 +61,7 @@ window.onload =function(){
     paddleHeight = paddleWidth / 6;
     paddleX = (canvas.width-paddleWidth)/2;
 
-    ballRadius = Math.floor(canvas.width/50);
+    ballRadius = Math.floor(canvas.width/40);
     ballSpeed = Math.floor(canvas.width/70);
 
     dx = ballSpeed;
@@ -185,8 +185,8 @@ if(window.innerHeight < h)
 canvas.width = w;
 canvas.height = h;
 
-brickWidth = Math.floor(canvas.width/23);
-brickHeight = Math.floor(canvas.width/23);
+brickWidth = Math.floor(canvas.width/18);
+brickHeight = brickWidth;
 
 // 背景用画像を書く
 const baseCanvas = document.getElementById("baseCanvas");

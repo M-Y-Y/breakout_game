@@ -7,7 +7,7 @@ let ctx = canvas.getContext("2d");
 const toolColor = "#e0476a";
 
 
-const paddleBottomMargin = 50;
+const paddleBottomMargin = 30;
 
 let brickWidth = 20;
 let brickHeight = 20;
@@ -32,6 +32,9 @@ let leftPressed = false;
 
 let score = 0;
 let lives = 10;
+
+let isRunning = true; // ゲーム進行中かどうか
+
 
 // 仮想的にブロックを作る
 let bricks = [];
@@ -72,10 +75,12 @@ window.onload =function(){
 
     overlayToggle();
 
-    const clickArea = document.getElementsByClassName('overlay-event');
+    overlay.addEventListener('click', stopEvent, false);
+    const clickArea = overlay.getElementsByClassName('overlay-event');
     for(let i = 0; i < clickArea.length; i++) {
         clickArea[i].addEventListener('click', stopEvent, false);
     }
+    
 
     function stopEvent() {
         overlay.classList.toggle('overlay-off');
@@ -313,6 +318,9 @@ function updateLives() {
 }
 
 function draw() {
+    if (!isRunning) return; 
+
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawBall();
@@ -337,11 +345,39 @@ function draw() {
                 document.location.reload();
             }
             else {
-                x = canvas.width/2;
-                y = canvas.height-30-paddleBottomMargin;
-                dx = ballSpeed;
-                dy = ballSpeed*-1;
-                paddleX = (canvas.width-paddleWidth)/2;
+                isRunning = false;
+
+                // オーバレイを開閉
+                const overlay = document.getElementById('gameover');
+                function overlayToggleOver() {
+                    overlay.classList.remove('overlay-off'); // まずオフを消す
+                    overlay.classList.add('overlay-on');     // オンを追加
+                }
+
+                overlayToggleOver();
+
+                overlay.addEventListener('click', stopEventOver, { once: true });
+                const clickArea = overlay.getElementsByClassName('overlay-event');
+                for(let i = 0; i < clickArea.length; i++) {
+                    clickArea[i].addEventListener('click', stopEventOver, { once: true });
+                }
+                function stopEventOver() {
+                    overlay.classList.remove('overlay-on');  // オンを消す
+                    overlay.classList.add('overlay-off');    // オフを追加
+
+                    x = canvas.width/2;
+                    y = canvas.height-30-paddleBottomMargin;
+                    dx = ballSpeed;
+                    dy = ballSpeed*-1;
+                    paddleX = (canvas.width-paddleWidth)/2;
+                    isRunning = true;
+                    draw();
+                }
+
+         
+                return;
+
+   
             }
         }
     }
@@ -357,3 +393,15 @@ function draw() {
     y += dy;
     requestAnimationFrame(draw);
 }
+
+
+// 失敗時の再開
+function resumeGame() {
+    x = canvas.width/2;
+    y = canvas.height-30-paddleBottomMargin;
+    dx = ballSpeed;
+    dy = ballSpeed*-1;
+    paddleX = (canvas.width-paddleWidth)/2;
+    isRunning = true;
+    draw();
+}                

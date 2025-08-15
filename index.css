@@ -63,7 +63,7 @@ footer {
 
 
 /*スタート画面*/
-#overlay{
+.overlay-item {
   position: fixed;
   top:0;
   z-index: 10;
@@ -74,11 +74,11 @@ footer {
   background: rgba(0,0,0,0.6);
   transition: all 0.5s ease-out;
 }
-#overlay.overlay-on{
+.overlay-item.overlay-on{
   visibility: visible;
   opacity: 1;
 }
-#overlay.overlay-off{
+.overlay-item.overlay-off{
     visibility: hidden;
     opacity: 0;
 }
@@ -94,7 +94,7 @@ footer {
     flex-direction: column;
 }
 
-#start-btn{
+.overlay-btn{
   border: none;
   outline: none;
   font: inherit;

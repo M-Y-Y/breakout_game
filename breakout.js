@@ -2,10 +2,7 @@
 const canvas = document.getElementById("breakoutCanvas");
 let ctx = canvas.getContext("2d");
 
-
-
 const toolColor = "#e0476a";
-
 
 const paddleBottomMargin = 30;
 
@@ -105,11 +102,10 @@ function initCanvas(imagePath, c){
         c.drawImage(image, brickOffsetLeft, brickOffsetLeft, 750, 1200
           , brickOffsetLeft, brickOffsetLeft,afterWidth,afterHeight);
 
-
-
         // 一回読画像を読み込んでからじゃないと当たり判定用マスクは作れないからここで…
         if(imagePath == brickImgPath)
         {
+
             const bricksMask = convertPngToMask(brickCtx);
 
             for(let c=0; c<brickColumnCount; c++) {
@@ -126,7 +122,6 @@ function initCanvas(imagePath, c){
     });
 
     image.src = imagePath;
-
 
 }
 
@@ -157,14 +152,14 @@ function convertPngToMask(bctx){
                 }
             }
 
-            if(alpha_block.every(n => !n)){
+            if(alpha_block.filter(n => n !== 0).length <= 50){
                 lows.push(0);
             }else{
                 lows.push(1);
                 validBrickCount++;
             }
         }
-
+ 
         columns.push(lows);
 
     }
@@ -188,6 +183,7 @@ canvas.height = h;
 brickWidth = Math.floor(canvas.width/18);
 brickHeight = brickWidth;
 
+
 // 背景用画像を書く
 const baseCanvas = document.getElementById("baseCanvas");
 let baseCtx = baseCanvas.getContext("2d");
@@ -202,7 +198,7 @@ brickCanvas.width = w;
 brickCanvas.height = h;
 
 const brickRowCount = Math.ceil(brickCanvas.width/brickWidth);
-const brickColumnCount = Math.ceil(brickCanvas.height/brickHeight);
+const brickColumnCount = Math.floor(brickCanvas.height/brickHeight);
 console.log('行：'+ brickRowCount);
 console.log('列' + brickColumnCount);
 
@@ -257,7 +253,8 @@ function collisionDetection() {
                     dy = -dy;
                     b.status = 0;
                     score++;
-                    if(score == validBrickCount) {
+                    validBrickCount--;
+                    if(0 == validBrickCount) {
                         alert("YOU WIN, CONGRATS!");
                         document.location.reload();
                     }
@@ -265,6 +262,7 @@ function collisionDetection() {
             }
         }
     }
+    
 }
 
 function drawBall() {
@@ -291,6 +289,14 @@ function drawBricks() {
 
             bricks[c][r].x = brickX;
             bricks[c][r].y = brickY;
+
+             if(bricks[c][r].status == 1) {
+                ctx.save();
+                ctx.globalAlpha = 0.4; // 透明度（0:完全透明, 1:不透明）
+                ctx.fillStyle = "#e0476a"; // 好きな色に変更可
+                ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
+                ctx.restore();
+            }
 
             if(bricks[c][r].status == 0 && !bricks[c][r].processed) {
                 // 当たったら画像を透過する
@@ -320,7 +326,6 @@ function updateLives() {
 function draw() {
     if (!isRunning) return; 
 
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawBall();
@@ -345,6 +350,10 @@ function draw() {
                 document.location.reload();
             }
             else {
+                console.log(score);
+                console.log(validBrickCount);
+                
+                
                 isRunning = false;
 
                 // オーバレイを開閉
@@ -373,11 +382,7 @@ function draw() {
                     isRunning = true;
                     draw();
                 }
-
-         
                 return;
-
-   
             }
         }
     }
@@ -394,14 +399,4 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-
-// 失敗時の再開
-function resumeGame() {
-    x = canvas.width/2;
-    y = canvas.height-30-paddleBottomMargin;
-    dx = ballSpeed;
-    dy = ballSpeed*-1;
-    paddleX = (canvas.width-paddleWidth)/2;
-    isRunning = true;
-    draw();
-}                
+             

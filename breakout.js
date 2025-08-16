@@ -255,8 +255,11 @@ function collisionDetection() {
                     score++;
                     validBrickCount--;
                     if(0 == validBrickCount) {
-                        alert("YOU WIN, CONGRATS!");
-                        document.location.reload();
+                        draw();      // 最後のマスを消す
+                        isRunning = false; // ゲーム停止
+                        setTimeout(() => {
+                            alert("脱衣成功✨");
+                        }, 2000); // 2秒後に表示
                     }
                 }
             }

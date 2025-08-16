@@ -290,7 +290,8 @@ function drawBricks() {
             bricks[c][r].x = brickX;
             bricks[c][r].y = brickY;
 
-             if(bricks[c][r].status == 1) {
+            // 残り10個で色付け
+             if(!isRunning && bricks[c][r].status == 1) {
                 ctx.save();
                 ctx.globalAlpha = 0.4; // 透明度（0:完全透明, 1:不透明）
                 ctx.fillStyle = "#e0476a"; // 好きな色に変更可
@@ -321,6 +322,7 @@ function drawBricks() {
 
 function updateLives() {
     document.getElementById("lifeCount").innerText = lives.toString();
+    document.getElementById("remain-count").innerText = validBrickCount.toString();
 }
 
 function draw() {
@@ -350,12 +352,10 @@ function draw() {
                 document.location.reload();
             }
             else {
-                console.log(score);
-                console.log(validBrickCount);
-                
-                
+
                 isRunning = false;
 
+                drawBricks();
                 // オーバレイを開閉
                 const overlay = document.getElementById('gameover');
                 function overlayToggleOver() {

@@ -49,24 +49,32 @@ footer {
 }
 
 .topShade {
+  position: absolute;
     background: linear-gradient(#e0476a90,transparent);
     background-blend-mode:overlay;
     height: 60px;
 }
 
+.headr-content{
+  position: absolute;
+  display: flex;
+  top:0;
+  gap: 10px;
+  margin: 10px;
+}
+
 .life{
-    position: absolute;
-    top:0;
-    padding: 10px;
-    font-size: 30px;
+  display: flex;
+  font-size: 30px;
 }
 
 .life p{
-    display: inline;
-    color: #FFFF;
+  margin-top: 0;
+  margin-right:5;
+  display: inline;
+  color: #FFFF;
+
 }
-
-
 /*スタート画面*/
 .overlay-item {
   position: fixed;

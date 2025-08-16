@@ -205,9 +205,9 @@ console.log('列' + brickColumnCount);
 initCanvas(brickImgPath, brickCtx);
 
 // キー関連
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-document.addEventListener("mousemove", mouseMoveHandler, false);
+window.addEventListener("keydown", keyDownHandler, false);
+window.addEventListener("keyup", keyUpHandler, false);
+window.addEventListener("mousemove", mouseMoveHandler, false);
 
 function keyDownHandler(e) {
     if(e.code  == "ArrowRight") {
@@ -226,9 +226,11 @@ function keyUpHandler(e) {
     }
 }
 function mouseMoveHandler(e) {
+    
     let relativeX = e.clientX - canvas.offsetLeft;
+
     if(relativeX > 0 && relativeX < canvas.width) {
-        paddleX = relativeX - paddleWidth/2;
+        paddleX = relativeX - paddleWidth/2;        
     }
 }
 
@@ -333,8 +335,13 @@ function draw() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
-    drawBall();
-    drawPaddle();
+
+      // クリア時はパドルとボールを描画しない
+    if (validBrickCount > 0) {
+        drawBall();
+        drawPaddle();
+    }
+    
     updateLives();
     collisionDetection();
 
